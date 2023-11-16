@@ -3,12 +3,22 @@ import (
   "net/http"
   "github.com/go-chi/chi/v5"
   "github.com/go-chi/render"
+  "github.com/go-chi/cors"
   "github.com/pat-tee/gobookmarkdb/db"
 )
 
 var dbInstance db.Database
 func NewHandler(db db.Database) http.Handler {
   router := chi.NewRouter()
+  router.Use(cors.Handler(cors.Options{
+    AllowedOrigins: []string{"https://*", "http://*", "file://*", "null"},
+    AllowedMethods: []string{"GET","POST","PUT","DELETE","OPTIONS"},
+    AllowedHeaders: []string{"Accept", "Authorization", "Content-Type", "X-CRSF-Token"},
+    ExposedHeaders: []string{"Link"},
+    AllowCredentials: false,
+    MaxAge: 300,
+  }))
+
   dbInstance = db
   router.MethodNotAllowed(methodNotAllowedHandler)
   router.NotFound(notFoundHandler)

@@ -42,6 +42,7 @@ func BookmarkContext(next http.Handler) http.Handler {
 func createBookmark(w http.ResponseWriter, r *http.Request) {
   bookmark := &models.Bookmark{}
   if err := render.Bind(r, bookmark); err != nil {
+    fmt.Print(err)
     render.Render(w,r,ErrBadRequest)
     return
   }

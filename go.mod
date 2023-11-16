@@ -8,6 +8,8 @@ require (
 	github.com/mattn/go-sqlite3 v1.14.18
 )
 
+require github.com/go-chi/cors v1.2.1
+
 require (
 	github.com/ajg/form v1.5.1 // indirect
 	github.com/joho/godotenv v1.5.1
