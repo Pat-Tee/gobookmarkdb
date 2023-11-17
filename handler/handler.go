@@ -3,14 +3,24 @@ import (
   "net/http"
   "github.com/go-chi/chi/v5"
   "github.com/go-chi/render"
-  "github.com/go-chi/cors"
+//  "github.com/go-chi/cors"
   "github.com/pat-tee/gobookmarkdb/db"
+  "github.com/pat-tee/gobookmarkdb/webui"
 )
 
-var dbInstance db.Database
-func NewHandler(db db.Database) http.Handler {
+func NewWebuiHandler() http.Handler {
   router := chi.NewRouter()
-  router.Use(cors.Handler(cors.Options{
+
+  router.NotFound(notFoundHandler)
+  router.Route("/", webui.Website)
+
+  return router
+}
+
+var dbInstance db.Database
+func NewDBHandler(db db.Database) http.Handler {
+  router := chi.NewRouter()
+/*  router.Use(cors.Handler(cors.Options{
     AllowedOrigins: []string{"https://*", "http://*", "file://*", "null"},
     AllowedMethods: []string{"GET","POST","PUT","DELETE","OPTIONS"},
     AllowedHeaders: []string{"Accept", "Authorization", "Content-Type", "X-CRSF-Token"},
@@ -18,7 +28,7 @@ func NewHandler(db db.Database) http.Handler {
     AllowCredentials: false,
     MaxAge: 300,
   }))
-
+*/
   dbInstance = db
   router.MethodNotAllowed(methodNotAllowedHandler)
   router.NotFound(notFoundHandler)

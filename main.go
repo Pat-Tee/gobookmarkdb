@@ -25,6 +25,7 @@ func main() {
   port := os.Getenv("PORT")
 
   listener, err := net.Listen("tcp", port)
+
   if err != nil {
     log.Fatalf("Error occurred: %s", err.Error())
   }
@@ -42,11 +43,27 @@ func main() {
  
   defer database.Conn.Close()
 
-  httpHandler := handler.NewHandler(database)
+  httpHandler := handler.NewDBHandler(database)
   server := &http.Server{
     Handler: httpHandler,
   }
+//============================
+// SERVER FOR HTML FRONT END
 
+  htmlListener, err := net.Listen("tcp", ":8080")
+  if err != nil {
+    log.Fatalf("Error occurred: %s", err.Error())
+  }
+  htmlHandler := handler.NewWebuiHandler() 
+  htmlServer := &http.Server{
+    Handler: htmlHandler,
+  }
+
+  go func() {
+    htmlServer.Serve(htmlListener)
+  }()
+
+//============================
   go func() {
     server.Serve(listener)
   }()
@@ -66,4 +83,3 @@ func Stop(server *http.Server) {
     os.Exit(1)
   }
 }
-
