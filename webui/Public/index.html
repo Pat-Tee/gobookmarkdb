@@ -70,25 +70,31 @@ a:link, a:visited {
   justify-content: space-between;
   display: flex;
   flex-direction: row;
-  align-items: center;
 }
 
 .button {
   border: 1px solid white;
   border-radius: 5px;
   cursor: pointer;
+
+  color: black;
+  padding: 0 0.25em 0 0.25em;
 }
 
 .delete {
   background-color: red;
-  color: black;
-  padding: 0 0.25em 0 0.25em;
 }
 
 .edit {
   background-color: yellow;
-  color: black;
-  padding: 0 0.25em 0 0.25em;
+}
+
+.save {
+  background-color: green;
+}
+
+.bmLink {
+
 }
 
 </style>
@@ -102,7 +108,7 @@ a:link, a:visited {
   <div class="main">
 
     <form id="form-bookmark" class="formBox">
-    <input type="url" id="url" name="URL" placeholder="url" value="http://www." 
+    <input type="url" id="url" name="URL" placeholder="url" value="https://www." 
       required minlength=4 maxlength=255>
     <input type="textarea" id="desc" name="Description" placeholder="description" 
       value="minimum desc" required minlength=8 maxlength=255>
