@@ -7,8 +7,11 @@ import (
   "github.com/go-chi/chi/v5"
 )
 
-func Website(router chi.Router) {
+func WebsiteRouter(router chi.Router) {
   router.Get("/", getRoot)
+  router.Get("/favicon.ico", faviconHandler)
+  router.Get("/index.js", javascriptHandler)
+
 }
 
 func getRoot(w http.ResponseWriter, r *http.Request) {
@@ -19,4 +22,12 @@ func getRoot(w http.ResponseWriter, r *http.Request) {
     return
   }
   tmpl.Execute(w, "")
+}
+
+func faviconHandler(w http.ResponseWriter, r *http.Request) {
+  http.ServeFile(w,r, "webui/Public/favicon.ico")
+}
+
+func javascriptHandler(w http.ResponseWriter, r *http.Request) {
+  http.ServeFile(w,r, "webui/Public/index.js")
 }
