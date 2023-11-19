@@ -16,11 +16,13 @@
 <!--  <link rel="stylesheet" href="css/styles.css?v=1.0">
 -->
 <style>
+:root {
+  var(--bmWidth, 25col);
+}
 
 * {
-  
   padding: 0;
-  margin: 0;
+  margin: 0 auto;
 }
 
 body {
@@ -39,8 +41,7 @@ a:link, a:visited {
 }
 
 .formBox {
-  display: flex;
-  justify-content: center;
+
 }
 
 .nav {
@@ -67,9 +68,15 @@ a:link, a:visited {
 }
 
 .bookmark {
-  justify-content: space-between;
-  display: flex;
-  flex-direction: row;
+  border: 2px solid grey;
+  border-radius: 4px;
+  background-color: #333333;
+  width: 25vw;
+  height: 4em;
+  margin: 10px;
+  padding: 5px;
+  overflow: hidden;
+  transition: 1s;
 }
 
 .button {
@@ -79,6 +86,18 @@ a:link, a:visited {
 
   color: black;
   padding: 0 0.25em 0 0.25em;
+}
+
+.button-group {
+  opacity: 0;
+  transition: 1s;
+  visiblity: hidden;
+  transition: visibility 0s, opacity 0.5s linear;
+}
+
+.bookmark:hover .button-group {
+  opacity: 1;
+  visibility: visible;
 }
 
 .delete {
@@ -93,8 +112,19 @@ a:link, a:visited {
   background-color: green;
 }
 
-.bmLink {
+.divider {
+  margin-top: 0.5em;
+  border: 1px dashed grey;
+  display: none; 
+  transition: 1s;
+  opacity: 0;
+  visibility: hidden;
+  transition: visibility 0s, opacity 0.5s linear;
+}
 
+.bookmark:hover .divider {
+  visibility: visible;
+  opacity: 1;
 }
 
 </style>
@@ -103,24 +133,17 @@ a:link, a:visited {
 <body onload="loadDB()">
   <div id="navbar" class="nav">
     <h3>Bookmarks</h3>
-
   </div>
   <div class="main">
-
     <form id="form-bookmark" class="formBox">
-    <input type="url" id="url" name="URL" placeholder="url" value="https://www." 
-      required minlength=4 maxlength=255>
-    <input type="textarea" id="desc" name="Description" placeholder="description" 
-      value="minimum desc" required minlength=8 maxlength=255>
-    <button type="submit">Submit</button>
+      <input type="url" id="url" name="URL" placeholder="url" value="https://www." 
+        required minlength=4 maxlength=255>
+      <input type="textarea" id="desc" name="Description" placeholder="description" 
+        value="minimum desc" required minlength=8 maxlength=255>
+      <button type="submit">Submit</button>
     </form>
-
-    <div class="bookmarks" id="bookmark-list">
-    </div>
- 
+    <div class="bookmarks" id="bookmark-list"></div>
   </div>
-  <script src="index.js" type="application/javascript">
-
-  </script>
+  <script src="index.js" type="application/javascript"></script>
 </body>
 </html>

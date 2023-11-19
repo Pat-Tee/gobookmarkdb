@@ -7,7 +7,8 @@ async function loadDB() {
     })
     .then ((data)=>{
       bookmarkList = data.bookmarks
-      showBookmarks(bookmarkList)
+      if (bookmarkList!=null)
+        showBookmarks(bookmarkList)
     })
     .catch((err)=>{
       console.log("Error occurred retrieving database: ", err)
@@ -64,11 +65,12 @@ const deleteBookmark=(loopId, dbId)=> {
   fetch(`http://localhost:8081/bookmarks/${dbId}`, {method:"delete"})
     .then((res)=>{
       if (!res.ok) {
-        console.log("expected ok, received: ", res.status)
+        console.log("expected ok, received: ", res.status) 
       }
       while (ele.firstChild) {
         ele.removeChild(ele.firstChild)
       }
+      ele.remove()
       bookmarkList.splice(loopId, 1)
     })
     .catch((err)=>{
@@ -91,7 +93,6 @@ const editBookmark=(loopId, dbId)=>{
 
 const saveBookmark=(bookmark)=>{
 
-  console.log("save bookmark: ", bookmarkList[bookmark])
   const formData = new FormData(document.getElementById("editedBM"))
   let data = {}
 
@@ -124,12 +125,11 @@ const htmlBookmark=(bookmark, i=1)=>{
   const html=
    `<div id=${i} class="bookmark">
       <div class="button-group">
-        <button type="button" class="button delete" onclick="deleteBookmark(${i},${bookmark.rowid})" >X</button>
-        <button type="button" class="button edit" onclick="editBookmark(${i},${bookmark.rowid})" >E</button>
+        <button type="button" class="button delete" onclick="deleteBookmark(${i},${bookmark.rowid})">X</button>
+        <button type="button" class="button edit" onclick="editBookmark(${i},${bookmark.rowid})">E</button>
       </div>
-      <div id="bmURL">
+      <hr class="divider">
         <h3><a href=${bookmark.url} target="_blank">${bookmark.url}</a></h3>
-      </div>
       <p id="bmDesc">${bookmark.description}</p>
     </div>`
 
@@ -141,11 +141,12 @@ const htmlEditBookmark=(bookmark, i)=>{
   const html=
    `<div id=${i} class="bookmark">
       <div class="button-group">
-      <button type="button" class="button save" onclick="saveBookmark(${i},${bookmark.rowid})">Save</button>
+        <button type="button" class="button save" onclick="saveBookmark(${i},${bookmark.rowid})">Save</button>
       </div>
+      <hr class="divider">
       <form id="editedBM">
-        <input type="text" name="URL" value="${bookmarkList[i].url}">
-        <input type="text" name="Description" value="${bookmarkList[i].description}">
+          <input type="text" name="URL" value="${bookmarkList[i].url}">
+          <input type="text" name="Description" value="${bookmarkList[i].description}">
       </form>
     </div>`
 
