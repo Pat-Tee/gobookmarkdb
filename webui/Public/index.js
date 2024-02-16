@@ -1,14 +1,18 @@
-let bookmarkList=[]
+var bookmarkList = []
 
-async function loadDB() { 
+async function loadDB() {
+
   fetch("http://localhost:8081/bookmarks")
     .then((res)=>{
       return res.json()
     })
     .then ((data)=>{
-      bookmarkList = data.bookmarks
-      if (bookmarkList!=null)
-        showBookmarks(bookmarkList)
+      if (data.bookmarks !== null) {
+        bookmarkList = data.bookmarks
+      } else {
+        bookmarkList = []
+      }
+      showBookmarks(bookmarkList)
     })
     .catch((err)=>{
       console.log("Error occurred retrieving database: ", err)
@@ -39,13 +43,14 @@ async function submitBookmark(e) {
 
   fetch("http://localhost:8081/bookmarks", fOptions)
     .then((res)=>{
-      if (res.ok) {
-        return res.json()
-      }
+        if (res.ok) {
+          return res.json()
+        }
+      })
+    .then((data)=>{
+      if (data !== null)
+        addBookmark(data)
     })
-  .then((data)=>{
-    addBookmark(data)
-  })
 }
 
 function showBookmarks(bookmarks) {
@@ -53,8 +58,10 @@ function showBookmarks(bookmarks) {
 
   target.innerHTML = ""
 
-  for (let i=0; i < bookmarks.length; i++) {
-    target.innerHTML += htmlBookmark(bookmarks[i], i) 
+  if (bookmarks != null) {
+    for (let i=0; i < bookmarks.length; i++) {
+      target.innerHTML += htmlBookmark(bookmarks[i], i) 
+    }
   }
 }
 
@@ -84,7 +91,7 @@ const addBookmark=(addedBookmark)=>{
   document.getElementById("form-bookmark").reset()
 }
 
-const editBookmark=(loopId, dbId)=>{
+const editBookmark=(loopId)=>{
 
   const bmEl = document.getElementById(loopId)
 
@@ -124,11 +131,13 @@ const htmlBookmark=(bookmark, i=1)=>{
   
   const html=
    `<div id=${i} class="bookmark">
+    <div class="card-header">
+      <img src="${bookmark.favicon}" width="16" height="16" alt="icon">
       <div class="button-group">
-        <button type="button" class="button delete" onclick="deleteBookmark(${i},${bookmark.rowid})">X</button>
         <button type="button" class="button edit" onclick="editBookmark(${i},${bookmark.rowid})">E</button>
+        <button type="button" class="button delete" onclick="deleteBookmark(${i},${bookmark.rowid})">X</button>
       </div>
-      <hr class="divider">
+    </div>
         <h3><a href=${bookmark.url} target="_blank">${bookmark.url}</a></h3>
       <p id="bmDesc">${bookmark.description}</p>
     </div>`
@@ -140,16 +149,19 @@ const htmlEditBookmark=(bookmark, i)=>{
 
   const html=
    `<div id=${i} class="bookmark">
+    <div class="card-header">
+        <img src="${bookmark.favicon}" width="16" height="16" class="bookmark-icon" alt="icon">
       <div class="button-group">
         <button type="button" class="button save" onclick="saveBookmark(${i},${bookmark.rowid})">Save</button>
       </div>
-      <hr class="divider">
+    </div>
       <form id="editedBM">
-          <input type="text" name="URL" value="${bookmarkList[i].url}">
-          <input type="text" name="Description" value="${bookmarkList[i].description}">
+          <input type="text" name="URL" value="${bookmark.url}">
+          <input type="text" name="Description" value="${bookmark.description}">
       </form>
     </div>`
 
   return html
 }
 
+const dFavicon = ""

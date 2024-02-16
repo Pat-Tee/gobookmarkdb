@@ -9,7 +9,7 @@ func (db Database) GetAllBookmarks() (*models.BookmarkList, error) {
   list := &models.BookmarkList{}
 
   rows, err := db.Conn.Query(
-    "SELECT rowid, url, description, created_at, updated_at FROM bookmark")// ORDER BY rowid DESC")
+    "SELECT rowid, url, description, favicon, created_at, updated_at FROM bookmark")// ORDER BY rowid DESC")
   if err != nil {
     return list, err
   }
@@ -20,6 +20,7 @@ func (db Database) GetAllBookmarks() (*models.BookmarkList, error) {
       &bookmark.Rowid, 
       &bookmark.URL,
       &bookmark.Desc,
+      &bookmark.Favicon,
       &bookmark.CreatedAt, 
       &bookmark.UpdatedAt, )
     if err != nil {
@@ -33,8 +34,8 @@ func (db Database) GetAllBookmarks() (*models.BookmarkList, error) {
 func (db Database) AddBookmark(bookmark *models.Bookmark) error {
   var rowid int
   var createdAt string
-  query := `INSERT INTO bookmark (url, description) VALUES ($1, $2) RETURNING rowid, created_at`
-  err := db.Conn.QueryRow(query, bookmark.URL, bookmark.Desc).Scan(&rowid, &createdAt)
+  query := `INSERT INTO bookmark (url, description, favicon) VALUES ($1, $2, $3) RETURNING rowid, created_at`
+  err := db.Conn.QueryRow(query, bookmark.URL, bookmark.Desc, bookmark.Favicon).Scan(&rowid, &createdAt)
   if err != nil {
     return err
   }
@@ -56,9 +57,9 @@ func (db Database) DeleteBookmark(bookmarkId int) error {
 
 func (db Database) GetBookmark(bookmarkId int) (*models.Bookmark, error) {
   bookmark := models.Bookmark{}
-  query := `SELECT rowid, url, description, created_at, updated_at FROM bookmark WHERE rowid = $1`
+  query := `SELECT rowid, url, description, favicon, created_at, updated_at FROM bookmark WHERE rowid = $1`
   err := db.Conn.QueryRow(query, bookmarkId).Scan(
-    &bookmark.Rowid, &bookmark.URL, &bookmark.Desc, &bookmark.CreatedAt, &bookmark.UpdatedAt)
+    &bookmark.Rowid, &bookmark.URL, &bookmark.Desc, &bookmark.Favicon, &bookmark.CreatedAt, &bookmark.UpdatedAt)
   switch err {
   case sql.ErrNoRows:
     return nil, ErrNoMatch

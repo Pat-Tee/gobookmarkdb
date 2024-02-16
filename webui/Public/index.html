@@ -9,12 +9,6 @@
   <meta name="description" content="Go Language Bookmark database and manager">
   <meta name="author" content="Pat-Tee">
 
-  <!--  <link rel="icon" href="webui/Public/favicon.ico">
-  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
--->
-<!--  <link rel="stylesheet" href="css/styles.css?v=1.0">
--->
 <style>
 :root {
   var(--bmWidth, 25col);
@@ -41,20 +35,24 @@ a:link, a:visited {
 }
 
 .formBox {
-
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  transform: translate(0, -25%);
 }
 
 .nav {
   border-radius: 5px;
   border: 3px solid grey;
-  margin: 0 auto;
+  margin: 10px 10px;
   padding: 4px;
-  width: 95%;
+  width: min-content;
   font-size: 2em;
   color: white;
   font-weight: bold;
   background-color: #313131;
-  width: 100ww;
+  align-items: center;
+  display: flex;
 }
 
 .logging {
@@ -64,6 +62,10 @@ a:link, a:visited {
 }
 
 .bookmarks {
+  color:white;
+}
+
+.bookmarks:a {
   color: coral;
 }
 
@@ -86,13 +88,21 @@ a:link, a:visited {
 
   color: black;
   padding: 0 0.25em 0 0.25em;
+  margin: 0 0 0 1em;
 }
 
 .button-group {
+  margin: 0;
   opacity: 0;
-  transition: 1s;
   visiblity: hidden;
-  transition: visibility 0s, opacity 0.5s linear;
+  transition: visibility 0s, opacity 0.25s linear;
+}
+
+.card-header {
+  margin: 0;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 }
 
 .bookmark:hover .button-group {
@@ -112,19 +122,23 @@ a:link, a:visited {
   background-color: green;
 }
 
-.divider {
-  margin-top: 0.5em;
-  border: 1px dashed grey;
-  display: none; 
-  transition: 1s;
-  opacity: 0;
-  visibility: hidden;
-  transition: visibility 0s, opacity 0.5s linear;
+img {
+  margin: 0;
+  padding: 0;
 }
 
-.bookmark:hover .divider {
-  visibility: visible;
-  opacity: 1;
+.file-upload {
+  position: absolute;
+  visibility: hidden;
+}
+
+.file-upload-button {
+  border: 1px solid white;
+  background: grey;
+  padding: 2px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
 }
 
 </style>
@@ -132,16 +146,33 @@ a:link, a:visited {
 
 <body onload="loadDB()">
   <div id="navbar" class="nav">
+    
+    <span style="justify-self: start;">
+    <img src="favicon.ico" alt="icon" width="32px" height="32px">
+    <input id="search" name="search" type="text" size="16" style="transform: translate(0, -50%);" 
+      placeholder="   Search   " />
     <h3>Bookmarks</h3>
-  </div>
-  <div class="main">
+    </span>
+    
+    <form enctype="multipart/form-data" 
+      action="http://localhost:8080/upload"
+      method="post" id="form-files" name="form-files" >
+      <input name="fileUpload" id="file-upload" type="file" multiple required accept=".html"
+      class="file-upload" />
+      <label for="file-upload" class="file-upload-button">Upload</label>
+    </form>
+
     <form id="form-bookmark" class="formBox">
       <input type="url" id="url" name="URL" placeholder="url" value="https://www." 
-        required minlength=4 maxlength=255>
+        required minlength=7 maxlength=255>
       <input type="textarea" id="desc" name="Description" placeholder="description" 
         value="minimum desc" required minlength=8 maxlength=255>
-      <button type="submit">Submit</button>
+      <input type="hidden" value="/favicon.ico" name="Favicon">
+      <button for="form-bookmark" type="submit">Submit</button>
     </form>
+
+  </div>
+  <div class="main">
     <div class="bookmarks" id="bookmark-list"></div>
   </div>
   <script src="index.js" type="application/javascript"></script>

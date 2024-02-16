@@ -22,10 +22,10 @@ func main() {
     log.Fatal("Could not load env credentials.")
   }
 
-  port := os.Getenv("PORT")
+  apiPort := os.Getenv("API_PORT")
+  htmlPort := os.Getenv("HTML_PORT")
 
-  listener, err := net.Listen("tcp", port)
-
+  apiListener, err := net.Listen("tcp", apiPort)
   if err != nil {
     log.Fatalf("Error occurred: %s", err.Error())
   }
@@ -44,11 +44,9 @@ func main() {
   defer database.Conn.Close()
 
   httpHandler := handler.NewDBHandler(database)
-  server := &http.Server{
+  apiServer := &http.Server{
     Handler: httpHandler,
   }
-//============================
-// SERVER FOR HTML FRONT END
 
   htmlListener, err := net.Listen("tcp", ":8080")
   if err != nil {
@@ -60,19 +58,22 @@ func main() {
   }
 
   go func() {
-    htmlServer.Serve(htmlListener)
+    apiServer.Serve(apiListener)
   }()
-
-//============================
   go func() {
-    server.Serve(listener)
-  }()
-  defer Stop(server)
-  log.Printf("Started server on %s", port)
+    htmlServer.Serve(htmlListener)
+  }()  
+  
+  defer Stop(apiServer)
+  defer Stop(htmlServer)
+  
+  log.Printf("Started API server on %s", apiPort)
+  log.Printf("Started HTML server on %s", htmlPort)
   ch := make(chan os.Signal, 1)
   signal.Notify(ch, syscall.SIGINT, syscall.SIGTERM)
   log.Println(fmt.Sprint(<-ch))
   log.Println("Stopping API server.")
+  log.Println("Stopping HTML server.")
 }
 
 func Stop(server *http.Server) {

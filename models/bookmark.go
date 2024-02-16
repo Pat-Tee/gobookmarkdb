@@ -9,6 +9,7 @@ type Bookmark struct {
   Rowid int `json:"rowid"`
   URL string `json:"url"`
   Desc string `json:"description"`
+  Favicon string `json:"favicon"`
   CreatedAt string `json:"created_at"`
   UpdatedAt string `json:"updated_at"`
 }
